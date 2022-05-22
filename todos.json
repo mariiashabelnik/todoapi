@@ -1,0 +1,6 @@
+[
+  { "todo": "Clean room", "done": true, "id": 1 },
+  { "todo": "Clean kitchen", "done": true, "id": 2 },
+  { "todo": "Hejsanas", "done": false, "id": 3 },
+  { "todo": "Fiskarna", "done": false, "id": 4 }
+]
