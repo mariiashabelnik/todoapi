@@ -44,7 +44,32 @@ const server = http.createServer(async (req, res) => {
       todos.push({ todo: userData.todo, done: false, id: newId });
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(todos));
-      updateDataFile();
+      updateDataFile(todos);
+    });
+  } else if (req.url.match(/\/todos\/([0-9]+)$/) && req.method === "PUT") {
+    const urlParts = req.url.split("/");
+    const id = parseInt(urlParts[2], 10);
+
+    let data = "";
+    req.on("data", (chunk) => {
+      data = data + chunk;
+    });
+
+    req.on("end", () => {
+      const userData = JSON.parse(data);
+
+      const tmpArray = todos.map((item) => {
+        if (item.id === id) {
+          return userData;
+        } else {
+          return item;
+        }
+      });
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(tmpArray));
+      updateDataFile(tmpArray);
+    });
     });
   }
   // If no route present
