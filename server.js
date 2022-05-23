@@ -70,10 +70,30 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify(tmpArray));
       updateDataFile(tmpArray);
     });
+  } else if (req.url.match(/\/todos\/([0-9]+)$/) && req.method === "PATCH") {
+    const urlParts = req.url.split("/");
+    const id = parseInt(urlParts[2], 10);
+
+    let data = "";
+    req.on("data", (chunk) => {
+      data = data + chunk;
     });
+
+    req.on("end", () => {
+      const userData = JSON.parse(data);
+
+      const tmpArray = todos.map((item) => {
+        if (item.id === id) {
+          return { ...item, ...userData };
+        } else {
+          return item;
   }
-  // If no route present
-  else {
+      });
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(tmpArray));
+      updateDataFile(tmpArray);
+    });
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
